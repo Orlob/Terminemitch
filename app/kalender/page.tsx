@@ -49,11 +49,8 @@ export default function KalenderPage() {
       }
       const appointments = await response.json();
       
-      console.log('Rohdaten von API:', appointments);
-      
       const calendarEvents = appointments.map((apt: any) => {
         if (!apt.id) {
-          console.error('Appointment hat keine ID:', apt);
           throw new Error('Appointment hat keine ID');
         }
         
@@ -66,14 +63,11 @@ export default function KalenderPage() {
           serviceType: apt.serviceType,
           notes: apt.notes,
         };
-        console.log('Verarbeite Appointment:', { original: apt, transformed: event });
         return event;
       });
 
-      console.log('Verarbeitete Events:', calendarEvents);
       setEvents(calendarEvents);
     } catch (error) {
-      console.error('Fehler:', error);
       toast.error('Fehler beim Laden der Termine');
     } finally {
       setIsLoading(false);
@@ -132,7 +126,6 @@ export default function KalenderPage() {
   };
 
   const handleSelectEvent = (event: CalendarEvent) => {
-    console.log('Event ausgewählt:', event);
     if (modal.isOpen) return;
 
     setModal({
@@ -161,12 +154,6 @@ export default function KalenderPage() {
   }) => {
     try {
       if (modal.mode === 'edit' && modal.event?.id) {
-        console.log('Update Termin:', {
-          id: modal.event.id,
-          appointmentData,
-          startTime: modal.startTime
-        });
-
         const response = await fetch(`/api/appointments/${modal.event.id}`, {
           method: 'PUT',
           headers: {
@@ -183,16 +170,9 @@ export default function KalenderPage() {
           throw new Error(errorData.error || 'Fehler beim Aktualisieren des Termins');
         }
 
-        const updatedAppointment = await response.json();
-        console.log('Termin aktualisiert:', updatedAppointment);
-
+        await response.json();
         toast.success('Termin erfolgreich aktualisiert! 🎉');
       } else {
-        console.log('Erstelle neuen Termin:', {
-          appointmentData,
-          startTime: modal.startTime
-        });
-
         const response = await fetch('/api/appointments', {
           method: 'POST',
           headers: {
@@ -209,43 +189,25 @@ export default function KalenderPage() {
           throw new Error(errorData.error || 'Fehler beim Speichern des Termins');
         }
 
-        const newAppointment = await response.json();
-        console.log('Neuer Termin erstellt:', newAppointment);
-
+        await response.json();
         toast.success('Termin erfolgreich gespeichert! 🎉');
       }
 
       await fetchAppointments();
       handleCloseModal();
     } catch (error: any) {
-      console.error('Fehler:', error);
       toast.error(error.message || 'Fehler beim Speichern des Termins');
     }
   };
 
   const handleDeleteAppointment = async () => {
     if (!modal.event?.id) {
-      console.log('Kein Termin zum Löschen gefunden', { 
-        modalEvent: modal.event,
-        allEvents: events 
-      });
       return;
     }
 
     try {
-      console.log('Versuche Termin zu löschen', { 
-        id: modal.event.id,
-        url: `/api/appointments/${modal.event.id}`,
-        modalEvent: modal.event
-      });
-
       const response = await fetch(`/api/appointments/${modal.event.id}`, {
         method: 'DELETE',
-      });
-
-      console.log('Delete Response erhalten', { 
-        status: response.status,
-        ok: response.ok 
       });
 
       if (!response.ok) {
@@ -257,7 +219,6 @@ export default function KalenderPage() {
       await fetchAppointments();
       handleCloseModal();
     } catch (error: any) {
-      console.error('Fehler beim Löschen:', error);
       toast.error(error.message || 'Fehler beim Löschen des Termins');
     }
   };
@@ -374,7 +335,6 @@ export default function KalenderPage() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Event geklickt:', event);
                     handleSelectEvent(event);
                   }}
                   onMouseDown={(e) => {

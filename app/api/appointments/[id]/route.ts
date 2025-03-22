@@ -11,8 +11,6 @@ export async function PUT(
     const id = params.id;
     const body = await request.json();
 
-    console.log('Update Termin API:', { id, body });
-
     if (!body.title || !body.start || !body.serviceType || !body.duration) {
       return NextResponse.json(
         { error: "Pflichtfelder fehlen" },
@@ -44,14 +42,9 @@ export async function PUT(
       );
     }
 
-    console.log('Termin aktualisiert:', updatedAppointment);
     return NextResponse.json(updatedAppointment);
-  } catch (error: any) {
-    console.error("Fehler beim Aktualisieren des Termins:", error);
-    return NextResponse.json(
-      { error: error.message || "Interner Server-Fehler" },
-      { status: 500 }
-    );
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
 
@@ -61,26 +54,20 @@ export async function DELETE(
 ) {
   try {
     await connectMongo();
-    const id = params.id;
 
-    console.log('Lösche Termin:', id);
+    const appointment = await Appointment.findById(params.id);
 
-    const deletedAppointment = await Appointment.findByIdAndDelete(id);
-
-    if (!deletedAppointment) {
+    if (!appointment) {
       return NextResponse.json(
         { error: "Termin nicht gefunden" },
         { status: 404 }
       );
     }
 
-    console.log('Termin gelöscht:', deletedAppointment);
+    await appointment.deleteOne();
+
     return NextResponse.json({ message: "Termin erfolgreich gelöscht" });
-  } catch (error: any) {
-    console.error("Fehler beim Löschen des Termins:", error);
-    return NextResponse.json(
-      { error: error.message || "Interner Server-Fehler" },
-      { status: 500 }
-    );
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 } 

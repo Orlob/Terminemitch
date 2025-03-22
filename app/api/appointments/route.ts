@@ -5,60 +5,40 @@ import Appointment from "@/models/Appointment";
 export async function GET() {
   try {
     await connectMongo();
-
-    const appointments = await Appointment.find({})
-      .sort({ start: 1 }); // Sortiere nach Startzeit aufsteigend
-
-    console.log('API - Gefundene Termine:', appointments);
-
+    const appointments = await Appointment.find({});
     return NextResponse.json(appointments);
-  } catch (error: any) {
-    console.error("Fehler beim Abrufen der Termine:", error);
-    return NextResponse.json(
-      { error: error.message || "Interner Server-Fehler" },
-      { status: 500 }
-    );
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     await connectMongo();
+    const body = await request.json();
 
-    const body = await req.json();
-    
-    // Validiere die erforderlichen Felder
     if (!body.title || !body.start || !body.serviceType || !body.duration) {
       return NextResponse.json(
-        { error: "Pflichtfelder fehlen" },
+        { error: "Alle Pflichtfelder müssen ausgefüllt sein" },
         { status: 400 }
       );
     }
 
-    // Berechne die Endzeit basierend auf der Startzeit und Dauer
     const startTime = new Date(body.start);
-    const endTime = new Date(new Date(startTime).setMinutes(startTime.getMinutes() + body.duration));
+    const endTime = new Date(startTime.getTime() + body.duration * 60000);
 
-    // Erstelle den Termin
     const appointment = await Appointment.create({
       title: body.title,
       start: startTime,
       end: endTime,
-      phone: body.phone || "",
+      phone: body.phone,
       serviceType: body.serviceType,
       notes: body.notes,
-      status: "pending",
     });
 
-    console.log('API - Neuer Termin erstellt:', appointment);
-
     return NextResponse.json(appointment);
-  } catch (error: any) {
-    console.error("Fehler beim Erstellen des Termins:", error);
-    return NextResponse.json(
-      { error: error.message || "Interner Server-Fehler" },
-      { status: 500 }
-    );
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
 
