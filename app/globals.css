@@ -20,3 +20,51 @@ progress::-webkit-progress-value {
     @apply !capitalize;
   }
 }
+
+/* Zeitslot-Styling */
+.rbc-timeslot-group {
+  min-height: 120px !important; /* Höhere Slots für bessere Sichtbarkeit */
+}
+
+.rbc-time-slot {
+  border-bottom: 1px dashed #e2e8f0 !important;
+}
+
+.rbc-time-slot:last-child {
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+.rbc-time-header-gutter {
+  font-size: 0.875rem;
+}
+
+/* Verbesserte Event-Darstellung */
+.rbc-event {
+  background-color: #3b82f6 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 0.875rem !important;
+}
+
+.rbc-event:hover {
+  background-color: #2563eb !important;
+}
+
+/* Zeitanzeige */
+.rbc-time-gutter .rbc-timeslot-group {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+/* Grid-Linien */
+.rbc-time-content {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.rbc-time-content > * + * > * {
+  border-left: 1px solid #e2e8f0 !important;
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-top: 1px dashed #e2e8f0 !important;
+}
