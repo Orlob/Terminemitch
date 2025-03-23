@@ -204,32 +204,33 @@ export default function AppointmentModal({
             </div>
 
             {/* Aktions-Buttons */}
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 py-3 px-4 rounded-lg text-lg font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
-              >
-                Abbrechen ❌
-              </button>
+            <div className="flex flex-col gap-3 pt-4">
               {appointment && onDelete && (
                 <button
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    console.log('Löschen-Button geklickt', { appointment });
-                    onDelete();
+                    if (window.confirm('Möchten Sie diesen Termin wirklich löschen?')) {
+                      onDelete();
+                    }
                   }}
-                  className="flex-1 py-3 px-4 rounded-lg text-lg font-medium bg-red-500 text-white hover:bg-red-600"
+                  className="w-full py-4 rounded-lg text-lg font-medium bg-red-500 text-white hover:bg-red-600 active:bg-red-700"
                 >
                   Termin löschen 🗑️
                 </button>
               )}
               <button
                 type="submit"
-                className="flex-1 py-3 px-4 rounded-lg text-lg font-medium bg-blue-500 text-white hover:bg-blue-600"
+                className="w-full py-4 rounded-lg text-lg font-medium bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700"
               >
                 {appointment ? 'Aktualisieren 💫' : 'Speichern ✅'}
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full py-4 rounded-lg text-lg font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300"
+              >
+                Abbrechen ❌
               </button>
             </div>
           </form>

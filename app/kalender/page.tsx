@@ -306,8 +306,8 @@ export default function KalenderPage() {
             onView={setView}
             date={date}
             onNavigate={handleNavigate}
-            min={new Date(new Date().setHours(8, 0, 0))}
-            max={new Date(new Date().setHours(18, 0, 0))}
+            min={new Date(new Date().setHours(8, 0, 0, 0))}
+            max={new Date(new Date().setHours(18, 0, 0, 0))}
             step={15}
             timeslots={4}
             selectable={true}
@@ -334,6 +334,11 @@ export default function KalenderPage() {
               event: ({ event }) => (
                 <div 
                   onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSelectEvent(event);
+                  }}
+                  onTouchStart={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     handleSelectEvent(event);
