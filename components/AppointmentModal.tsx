@@ -81,10 +81,10 @@ export default function AppointmentModal({
   };
 
   const serviceTypes = [
-    { id: 'haircut', label: 'Haarschnitt ✂️' },
+    { id: 'haircut', label: 'Schnitt ✂️' },
     { id: 'coloring', label: 'Färben 🎨' },
     { id: 'styling', label: 'Styling 💇‍♀️' },
-    { id: 'other', label: 'Waschen 💦' },
+    { id: 'other', label: 'Waschi 💦' },
   ];
 
   const durations = [
@@ -106,8 +106,8 @@ export default function AppointmentModal({
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
       {/* Modal-Position */}
-      <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
+        <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl my-4 max-h-[90vh] overflow-y-auto">
           <Dialog.Title className="text-2xl font-bold mb-4">
             {appointment ? 'Termin bearbeiten ✏️' : 'Neuer Termin 📅'} {startTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr
           </Dialog.Title>
