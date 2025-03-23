@@ -59,15 +59,22 @@ export default function KalenderPage() {
           throw new Error('Appointment hat keine ID');
         }
         
-        // Zeitzone für die Anzeige berücksichtigen
-        const startDate = new Date(apt.start);
-        const endDate = new Date(apt.end);
+        // Konvertiere UTC Zeiten in lokale Zeiten
+        const startUTC = new Date(apt.start);
+        const endUTC = new Date(apt.end);
         
+        // Zeitzonenoffset in Minuten
+        const offset = startUTC.getTimezoneOffset();
+        
+        // Passe die Zeiten an
+        const start = new Date(startUTC.getTime() + (offset * 60000));
+        const end = new Date(endUTC.getTime() + (offset * 60000));
+
         const event: CalendarEvent = {
           id: apt.id,
           title: `${apt.title} ${apt.phone ? '📱 ' + apt.phone : ''}`,
-          start: startDate,
-          end: endDate,
+          start: start,
+          end: end,
           phone: apt.phone,
           serviceType: apt.serviceType,
           notes: apt.notes,
@@ -163,9 +170,16 @@ export default function KalenderPage() {
   }) => {
     try {
       // Erstelle Start- und Endzeit
-      const start = new Date(modal.startTime);
-      const end = new Date(modal.startTime);
-      end.setMinutes(end.getMinutes() + appointmentData.duration);
+      const startTime = new Date(modal.startTime);
+      const endTime = new Date(modal.startTime);
+      endTime.setMinutes(endTime.getMinutes() + appointmentData.duration);
+
+      // Zeitzonenoffset in Minuten (z.B. 120 für UTC+2)
+      const offset = startTime.getTimezoneOffset();
+      
+      // Passe die Zeiten an, um den Offset zu kompensieren
+      const start = new Date(startTime.getTime() - (offset * 60000));
+      const end = new Date(endTime.getTime() - (offset * 60000));
 
       if (modal.mode === 'edit' && modal.event?.id) {
         const response = await fetch(`/api/appointments/${modal.event.id}`, {
