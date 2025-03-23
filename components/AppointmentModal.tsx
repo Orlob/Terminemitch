@@ -62,12 +62,12 @@ export default function AppointmentModal({
     }
   }, [appointment]);
 
-  // Automatischer Fokus auf das Namensfeld
+  // Automatischer Fokus auf das Namensfeld nur beim Erstellen
   useEffect(() => {
-    if (isOpen && titleInputRef.current) {
+    if (isOpen && !appointment && titleInputRef.current) {
       titleInputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, appointment]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
