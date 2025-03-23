@@ -10,7 +10,12 @@ import { toast } from 'react-hot-toast';
 
 // Deutsch als Standardsprache setzen
 moment.locale('de');
+
+// Konfiguriere moment für die lokale Zeitzone
 const localizer = momentLocalizer(moment);
+
+// Stelle sicher, dass moment die Zeiten in der lokalen Zeitzone interpretiert
+moment.parseZone();
 
 interface CalendarEvent extends Event {
   id: string;
@@ -54,11 +59,15 @@ export default function KalenderPage() {
           throw new Error('Appointment hat keine ID');
         }
         
+        // Zeitzone für die Anzeige berücksichtigen
+        const startDate = new Date(apt.start);
+        const endDate = new Date(apt.end);
+        
         const event: CalendarEvent = {
           id: apt.id,
           title: `${apt.title} ${apt.phone ? '📱 ' + apt.phone : ''}`,
-          start: new Date(apt.start),
-          end: new Date(apt.end),
+          start: startDate,
+          end: endDate,
           phone: apt.phone,
           serviceType: apt.serviceType,
           notes: apt.notes,
@@ -153,6 +162,11 @@ export default function KalenderPage() {
     notes?: string;
   }) => {
     try {
+      // Erstelle Start- und Endzeit
+      const start = new Date(modal.startTime);
+      const end = new Date(modal.startTime);
+      end.setMinutes(end.getMinutes() + appointmentData.duration);
+
       if (modal.mode === 'edit' && modal.event?.id) {
         const response = await fetch(`/api/appointments/${modal.event.id}`, {
           method: 'PUT',
@@ -161,7 +175,8 @@ export default function KalenderPage() {
           },
           body: JSON.stringify({
             ...appointmentData,
-            start: modal.startTime,
+            start: start.toISOString(),
+            end: end.toISOString(),
           }),
         });
 
@@ -180,7 +195,8 @@ export default function KalenderPage() {
           },
           body: JSON.stringify({
             ...appointmentData,
-            start: modal.startTime,
+            start: start.toISOString(),
+            end: end.toISOString(),
           }),
         });
 
