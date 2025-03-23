@@ -311,6 +311,7 @@ export default function KalenderPage() {
             step={15}
             timeslots={4}
             selectable={true}
+            longPressThreshold={3}
             onSelectSlot={handleSelectSlot}
             onSelectEvent={handleSelectEvent}
             dayPropGetter={(date) => {
